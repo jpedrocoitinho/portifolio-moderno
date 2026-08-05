@@ -1,0 +1,107 @@
+/* From Uiverse.io by MarcLazz */ 
+.button-container-inicio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 22px;
+}
+
+.button-inicio {
+  cursor: pointer;
+  text-decoration: none;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(147, 112, 219, 0.4);
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.75);
+  transition: all 0.45s;
+}
+
+.button-inicio:hover {
+  transform: rotate(360deg);
+  transform-origin: center center;
+  background-color: #ffffff;
+  color: #2d2e32;
+  box-shadow: 0 0 24px rgba(147, 112, 219, 0.95);
+}
+
+.button-inicio:hover .btn-svg {
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(305deg)
+    brightness(103%) contrast(103%);
+}
+
+.btn-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* animação do incio */
+.intro-loader{
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    min-height: 100dvh;
+    background:
+        radial-gradient(circle at 70% 20%, rgba(91, 39, 168, 0.35), transparent 32%),
+         radial-gradient(circle at 20% 80%, rgba(39, 31, 120, 0.28), transparent 36%),
+        #09071f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+}
+
+
+
+.intro-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-family: "Poppins", sans-serif;
+    color: #f4f1ff;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    margin: 0;
+}
+
+.intro-words {
+    display: flex;
+    gap: 26px;
+    margin-top: 14px;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: #7357ff;
+}
+
+.intro-words span {
+    background: linear-gradient(180deg, #8b6dff 0%, #6f4cff 52%, #4b35c9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.word-digital{
+    transform: translateY(20px);
+}
+
+.button-container-inicio .button-inicio {
+  opacity: 0;
+  filter: blur(8px);
+}
+
+.intro-title,
+.intro-words span {
+  opacity: 0;
+  filter: blur(8px);
+}
