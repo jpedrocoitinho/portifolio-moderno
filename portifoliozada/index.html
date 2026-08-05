@@ -150,6 +150,29 @@
 </h1>
                  
 
+    <div class="linha-jornada" aria-hidden="true">
+        <svg class="linha-jornada-svg" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="gradiente-jornada" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#387ef0"></stop>
+                    <stop offset="48%" stop-color="#7c5cff"></stop>
+                    <stop offset="100%" stop-color="#ff2288"></stop>
+                </linearGradient>
+                <filter id="brilho-jornada" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+                    <feMerge>
+                        <feMergeNode in="blur"></feMergeNode>
+                        <feMergeNode in="SourceGraphic"></feMergeNode>
+                    </feMerge>
+                </filter>
+            </defs>
+            <path class="linha-jornada-base"></path>
+            <path class="linha-jornada-brilho"></path>
+            <path class="linha-jornada-progresso"></path>
+            <circle class="linha-jornada-ponto" r="3.5"></circle>
+        </svg>
+    </div>
+
     <section id="sobre" class="sobre">
         <div class="sobre-conteudo sobre-caixa">
             <div class="sobre-textos">
@@ -254,41 +277,159 @@
         <h2 class="projeto-titulo">Projetos</h2>
 
         <div class="projetos-caixa">
-            <div class="projetos-card">
-                <img src="WIN_20250605_19_47_01_Pro.jpg" alt="Projeto1" class="projetos-imagem">
-                <div class="caixa-textos-projetos">
-                    <h3 class="info-projetos">Loja de Ofertas</h3>
-                    <p class="paragrafo-projetos">Projeto de loja virtual desenvolvido em front-end, com design moderno,
-                        cores vibrantes e foco em uma experiencia visual atraente e interativa.</p>
+            <a class="projetos-card" href="https://floripa-check.vercel.app/" target="_blank"
+                rel="noopener noreferrer" aria-label="Abrir projeto Floripa Check">
+                <div class="projetos-conteudo">
+                    <img src="floripa-check.png" alt="Captura de tela do projeto Floripa Check"
+                        class="projetos-imagem">
                 </div>
-            </div>
+            </a>
 
-            <div class="projetos-card">
-                <img src="WIN_20250605_19_47_01_Pro.jpg" alt="Projeto2" class="projetos-imagem">
-                <div class="caixa-textos-projetos">
-                    <h3 class="info-projetos">Loja de brinquedos-Magic Toys</h3>
-                    <p class="paragrafo-projetos">Loja de brinquedos desenvolvida em front-end, com design colorido e
-                        interativo, simulando uma vitrine funcional com produtos, preÃ§os e carrinho visual.</p>
+            <a class="projetos-card" href="https://industria-conectada.vercel.app/" target="_blank"
+                rel="noopener noreferrer" aria-label="Abrir projeto Indústria Conectada">
+                <div class="projetos-conteudo">
+                    <img src="industria.png" alt="Captura de tela do projeto Indústria"
+                        class="projetos-imagem">
                 </div>
-            </div>
+            </a>
 
-            <div class="projetos-card">
-                <img src="WIN_20250605_19_47_01_Pro.jpg" alt="Projeto3" class="projetos-imagem">
-                <div class="caixa-textos-projetos">
-
-                    <h3 class="info-projetos">Formulario basico</h3>
-                    <p class="paragrafo-projetos">Formulario de contato simples desenvolvido em front-end, com design
-                        limpo,
-                        responsivo e voltado para facilitar a comunicação com o usuário.</p>
+            <a class="projetos-card"
+                href="https://landing-page-funeraria-fipy40duw-joao-pedro-coitinho-s-projects.vercel.app/"
+                target="_blank" rel="noopener noreferrer" aria-label="Abrir projeto Funerária">
+                <div class="projetos-conteudo">
+                    <img src="funeraria.png" alt="Captura de tela do projeto Funerária"
+                        class="projetos-imagem">
                 </div>
-            </div>
+            </a>
 
+            <a class="projetos-card" href="https://portifolio-odontologia.vercel.app/" target="_blank"
+                rel="noopener noreferrer" aria-label="Abrir projeto Odontologia">
+                <div class="projetos-conteudo">
+                    <img src="odontologia.png" alt="Captura de tela do projeto Odontologia"
+                        class="projetos-imagem">
+                </div>
+            </a>
         </div>
     </section>
-    </section>
 
-    <section>
-        <h1>Habilidades TÃ©cnicas</h1>
+    <section id="tecnologias" class="stack">
+        <div class="stack-cabecalho">
+            <span class="stack-sobretitulo">Ferramentas que uso para construir</span>
+            <h2 class="stack-titulo">Stack que transforma <span>ideias</span></h2>
+            <p>Do front-end ao banco de dados, tecnologias escolhidas para criar experiências completas.</p>
+        </div>
+
+        <div class="stack-painel">
+            <article class="stack-item" style="--stack-cor: #5FA04E">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/nodedotjs/5FA04E" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Runtime</span>
+                    <h3>Node.js</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #FFFFFF">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/express/FFFFFF" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Back-end</span>
+                    <h3>Express</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #D63AFF">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/jsonwebtokens/D63AFF" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Autenticação</span>
+                    <h3>JWT</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #6BA539">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/openapiinitiative/6BA539" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Integração</span>
+                    <h3>REST API</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #4479A1">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Banco de dados</span>
+                    <h3>MySQL</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #4169E1">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Banco de dados</span>
+                    <h3>PostgreSQL</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #3FCF8E">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/supabase/3FCF8E" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Backend as a Service</span>
+                    <h3>Supabase</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #E34F26">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/html5/E34F26" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Estrutura</span>
+                    <h3>HTML5</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #663399">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/css/663399" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Estilo</span>
+                    <h3>CSS3</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #F7DF1E">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>Interatividade</span>
+                    <h3>JavaScript</h3>
+                </div>
+            </article>
+
+            <article class="stack-item" style="--stack-cor: #06B6D4">
+                <div class="stack-icone">
+                    <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="">
+                </div>
+                <div class="stack-texto">
+                    <span>UI Framework</span>
+                    <h3>Tailwind CSS</h3>
+                </div>
+            </article>
+        </div>
     </section>
 
 
@@ -299,27 +440,84 @@
         <h2 class="contato-titulo">Contato</h2>
 
 
-        <form class="formulario-contato" id="formulario">
+        <div class="contato-wrapper">
+            <form class="contato-form-uiverse" id="formulario">
+                <span class="contato-form-titulo">Envie uma mensagem</span>
 
-            <div class="grupo-form">
-                <input class="campo-form" placeholder="Nome">
-            </div>
+                <label class="contato-input-container" for="contato-nome">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4.5 20C5.2 15.8 7.7 14 12 14C16.3 14 18.8 15.8 19.5 20"></path>
+                    </svg>
+                    <input class="contato-input" id="contato-nome" name="nome" type="text"
+                        placeholder="Nome" autocomplete="name" required maxlength="80">
+                </label>
 
-            <div class="grupo-form">
-                <textarea class="campo-form" placeholder="Digite sua Mensagem aqui..." id=""></textarea>
-            </div>
+                <label class="contato-input-container contato-mensagem-container" for="contato-mensagem">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 5.5H20V16.5H9L4 20V5.5Z"></path>
+                        <path d="M8 9H16M8 12.5H14"></path>
+                    </svg>
+                    <textarea class="contato-input contato-mensagem" id="contato-mensagem" name="mensagem"
+                        placeholder="Digite sua mensagem aqui..." required maxlength="1000"></textarea>
+                </label>
 
-            <button type="submit" class="botao-form">Enviar whatsapp</button>
-        </form>
+                <div class="contato-botao-container">
+                    <button class="contato-botao" type="submit">
+                        Enviar pelo WhatsApp
+                        <span aria-hidden="true">↗</span>
+                    </button>
+                </div>
+
+                <div class="contato-textura" aria-hidden="true"></div>
+            </form>
+        </div>
 
     </section>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="script.js"></script>
 
 
-    <footer></footer>
+    <footer class="rodape">
+        <div class="rodape-conteudo">
+            <div class="rodape-topo">
+                <div class="rodape-marca">
+                    <a href="#inicio" class="rodape-logo">JOÃO PEDRO</a>
+                    <p>Desenvolvedor front-end criando interfaces modernas, funcionais e com personalidade.</p>
+                </div>
+
+                <nav class="rodape-coluna" aria-label="Navegação do rodapé">
+                    <h2>Navegação</h2>
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre mim</a>
+                    <a href="#projetos">Projetos</a>
+                    <a href="#contato">Contato</a>
+                </nav>
+
+                <div class="rodape-coluna">
+                    <h2>Especialidades</h2>
+                    <span>Front-end</span>
+                    <span>UI Design</span>
+                    <span>Sites responsivos</span>
+                    <span>Experiências digitais</span>
+                </div>
+
+                <div class="rodape-coluna rodape-conversa">
+                    <h2>Disponível para projetos</h2>
+                    <p>Tem uma ideia? Vamos transformar em uma experiência digital.</p>
+                    <a href="#contato">Vamos conversar <span aria-hidden="true">↗</span></a>
+                </div>
+            </div>
+
+            <div class="rodape-meta">
+                <span>© 2026 João Pedro C.</span>
+                <span>Front-end &amp; Design</span>
+            </div>
+
+            <div class="rodape-palavra" aria-hidden="true">JOÃO PEDRO</div>
+        </div>
+    </footer>
 
 </body>
 
