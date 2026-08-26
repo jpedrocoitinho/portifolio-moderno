@@ -4,6 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        try {
+            if (localStorage.getItem("portfolio-tema") === "light") {
+                document.documentElement.dataset.theme = "light";
+            }
+        } catch (_) {}
+    </script>
     <title>Portifolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +26,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=light-contact-1">
     <link rel="stylesheet" href="inicio.css">
 </head>
 
@@ -81,21 +91,30 @@
     <div class="particulas"></div>
 
     <nav class="navegacao">
-        <a href="#inicio" class="nav-logo">João Pedro</a>
-        <ul class="menu">
-            <li>
-                <a href="#inicio" class="menu-link">inicio</a>
-            </li>
-            <li>
-                <a href="#sobre" class="menu-link">Sobre</a>
-            </li>
-            <li>
-                <a href="#projetos" class="menu-link">Portfólio</a>
-            </li>
-            <li>
-                <a href="#contato" class="menu-link">Contato</a>
-            </li>
-        </ul>
+        <a href="#inicio" class="nav-logo" data-text="João Pedro" aria-label="João Pedro — início">
+            <span class="nav-logo-actual">João Pedro</span>
+            <span class="nav-logo-hover" aria-hidden="true">João Pedro</span>
+        </a>
+        <div class="nav-uiverse" style="--indice-nav: 0">
+            <div class="menu" aria-label="Navegação principal">
+                <a href="#inicio" class="menu-link ativo" data-indice="0">Início</a>
+                <a href="#sobre" class="menu-link" data-indice="1">Sobre</a>
+                <a href="#projetos" class="menu-link" data-indice="2">Projetos</a>
+                <a href="#contato" class="menu-link" data-indice="3">Contato</a>
+                <span class="nav-barras" aria-hidden="true"></span>
+                <span class="nav-slide" aria-hidden="true"></span>
+            </div>
+
+            <button class="tema-toggle" type="button" aria-label="Ativar tema claro" aria-pressed="false">
+                <svg class="tema-icone tema-lua" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.7 8.7 0 1 0 20.2 15.2Z"></path>
+                </svg>
+                <svg class="tema-icone tema-sol" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3.5"></circle>
+                    <path d="M12 2V4M12 20V22M4.93 4.93L6.34 6.34M17.66 17.66L19.07 19.07M2 12H4M20 12H22M4.93 19.07L6.34 17.66M17.66 6.34L19.07 4.93"></path>
+                </svg>
+            </button>
+        </div>
     </nav>
 
     <main id="inicio" class="cabecalho">
@@ -138,8 +157,8 @@
         </div>
 
         <div class="container-noot">
-            <img class="bonequin" src="bonequin.png" alt="">
-            <img class="cubo" src="cubo.png" alt="">
+            <img class="bonequin" src="bonequin.png" alt="" decoding="async" fetchpriority="high">
+            <img class="cubo" src="cubo.png" alt="" decoding="async">
         </div>
         
 
@@ -169,7 +188,6 @@
             <path class="linha-jornada-base"></path>
             <path class="linha-jornada-brilho"></path>
             <path class="linha-jornada-progresso"></path>
-            <circle class="linha-jornada-ponto" r="3.5"></circle>
         </svg>
     </div>
 
@@ -179,12 +197,14 @@
                 <h2 class="sobre-titulo">
                     Olá, eu sou
                     <span>João Pedro C.</span>
+                    <small class="sobre-cargo">Desenvolvedor Web.</small>
                 </h2>
 
                 <p class="sobre-paragrafo">
-                    Sou estudante do curso técnico de Informática para Internet no SENAI. Gosto de criar interfaces
-                    modernas, acessíveis e funcionais, trabalhando com front-end, design e experiências digitais que
-                    deixam cada projeto mais bonito, rápido e fácil de usar.
+                    Dev, focado na criação de interfaces modernas, responsivas e interativas.
+                    Desenvolvo projetos com HTML, CSS e JavaScript, explorando animações e experiências digitais
+                    diferenciadas, enquanto amplio meus conhecimentos em React, back-end e desenvolvimento de sistemas
+                    completos.
                 </p>
 
                 <div class="sobre-acoes">
@@ -198,7 +218,7 @@
             </div>
 
           <div class="sobre-imagem">
-             <img src="eu.jpg" alt="Foto de João Pedro">
+             <img src="eu.jpg" alt="Foto de João Pedro" loading="eager" decoding="async" fetchpriority="low">
              <span class="feixe-luz"></span>
              <span class="feixe-luz-2"></span>
           </div>
@@ -265,7 +285,7 @@
             <a class="sobre-stat-card sobre-stat-menor" href="#contato">
                 <div class="sobre-stat-icone">◉</div>
                 <h3>Disponibilidade</h3>
-                <p>Remoto & Freelance</p>
+                <p>Remoto</p>
                 <span class="sobre-card-canto">
                     <span>→</span>
                 </span>
@@ -278,35 +298,67 @@
 
         <div class="projetos-caixa">
             <a class="projetos-card" href="https://floripa-check.vercel.app/" target="_blank"
-                rel="noopener noreferrer" aria-label="Abrir projeto Floripa Check">
+                rel="noopener noreferrer" aria-label="Conhecer o projeto Floripa Check" aria-expanded="false">
                 <div class="projetos-conteudo">
-                    <img src="floripa-check.png" alt="Captura de tela do projeto Floripa Check"
+                    <img src="floripa-check.png" alt="Captura de tela do projeto Floripa Check" loading="lazy" decoding="async"
                         class="projetos-imagem">
+                    <span class="projeto-info">
+                        <span class="projeto-info-conteudo">
+                            <span class="projeto-indice">01 — Plataforma</span>
+                            <strong>Floripa Check</strong>
+                            <span class="projeto-descricao">Explore e avalie as praias de Florianópolis em uma plataforma moderna, criada para tornar a busca pelo destino ideal mais simples e intuitiva.</span>
+                            <span class="projeto-abrir">Visitar projeto <span aria-hidden="true">↗</span></span>
+                        </span>
+                    </span>
                 </div>
             </a>
 
             <a class="projetos-card" href="https://industria-conectada.vercel.app/" target="_blank"
-                rel="noopener noreferrer" aria-label="Abrir projeto Indústria Conectada">
+                rel="noopener noreferrer" aria-label="Conhecer o projeto Indústria Conectada" aria-expanded="false">
                 <div class="projetos-conteudo">
-                    <img src="industria.png" alt="Captura de tela do projeto Indústria"
+                    <img src="industria.png" alt="Captura de tela do projeto Indústria" loading="lazy" decoding="async"
                         class="projetos-imagem">
+                    <span class="projeto-info">
+                        <span class="projeto-info-conteudo">
+                            <span class="projeto-indice">02 — Sistema</span>
+                            <strong>Indústria Conectada</strong>
+                            <span class="projeto-descricao">Sistema de gerenciamento de ocorrências industriais desenvolvido para centralizar registros, otimizar processos e facilitar o acompanhamento das operações.</span>
+                            <span class="projeto-abrir">Visitar projeto <span aria-hidden="true">↗</span></span>
+                        </span>
+                    </span>
                 </div>
             </a>
 
             <a class="projetos-card"
-                href="https://landing-page-funeraria-fipy40duw-joao-pedro-coitinho-s-projects.vercel.app/"
-                target="_blank" rel="noopener noreferrer" aria-label="Abrir projeto Funerária">
+                href="https://sc-funeraria-grande-florianopolis.vercel.app/"
+                target="_blank" rel="noopener noreferrer" aria-label="Conhecer o projeto Funerária Grande Florianópolis" aria-expanded="false">
                 <div class="projetos-conteudo">
-                    <img src="funeraria.png" alt="Captura de tela do projeto Funerária"
+                    <img src="funeraria.png" alt="Captura de tela do projeto Funerária" loading="lazy" decoding="async"
                         class="projetos-imagem">
+                    <span class="projeto-info">
+                        <span class="projeto-info-conteudo">
+                            <span class="projeto-indice">03 — Landing page</span>
+                            <strong>Funerária Grande Florianópolis</strong>
+                            <span class="projeto-descricao">Landing page institucional desenvolvida para apresentar serviços funerários de forma elegante e acolhedora, com navegação intuitiva, informações essenciais e contato facilitado para atendimento.</span>
+                            <span class="projeto-abrir">Visitar projeto <span aria-hidden="true">↗</span></span>
+                        </span>
+                    </span>
                 </div>
             </a>
 
             <a class="projetos-card" href="https://portifolio-odontologia.vercel.app/" target="_blank"
-                rel="noopener noreferrer" aria-label="Abrir projeto Odontologia">
+                rel="noopener noreferrer" aria-label="Conhecer o projeto Odontologia" aria-expanded="false">
                 <div class="projetos-conteudo">
-                    <img src="odontologia.png" alt="Captura de tela do projeto Odontologia"
+                    <img src="odontologia.png" alt="Captura de tela do projeto Odontologia" loading="lazy" decoding="async"
                         class="projetos-imagem">
+                    <span class="projeto-info">
+                        <span class="projeto-info-conteudo">
+                            <span class="projeto-indice">04 — Landing page</span>
+                            <strong>Odontologia</strong>
+                            <span class="projeto-descricao">Landing page desenvolvida para uma clínica odontológica, com foco em apresentar tratamentos e estrutura de forma moderna e profissional, facilitando o acesso às informações e o contato para agendamentos.</span>
+                            <span class="projeto-abrir">Visitar projeto <span aria-hidden="true">↗</span></span>
+                        </span>
+                    </span>
                 </div>
             </a>
         </div>
@@ -322,7 +374,7 @@
         <div class="stack-painel">
             <article class="stack-item" style="--stack-cor: #5FA04E">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/nodedotjs/5FA04E" alt="">
+                    <img src="https://cdn.simpleicons.org/nodedotjs/5FA04E" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Runtime</span>
@@ -332,7 +384,7 @@
 
             <article class="stack-item" style="--stack-cor: #FFFFFF">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/express/FFFFFF" alt="">
+                    <img src="https://cdn.simpleicons.org/express/FFFFFF" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Back-end</span>
@@ -342,7 +394,7 @@
 
             <article class="stack-item" style="--stack-cor: #D63AFF">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/jsonwebtokens/D63AFF" alt="">
+                    <img src="https://cdn.simpleicons.org/jsonwebtokens/D63AFF" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Autenticação</span>
@@ -352,7 +404,7 @@
 
             <article class="stack-item" style="--stack-cor: #6BA539">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/openapiinitiative/6BA539" alt="">
+                    <img src="https://cdn.simpleicons.org/openapiinitiative/6BA539" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Integração</span>
@@ -362,7 +414,7 @@
 
             <article class="stack-item" style="--stack-cor: #4479A1">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="">
+                    <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Banco de dados</span>
@@ -372,7 +424,7 @@
 
             <article class="stack-item" style="--stack-cor: #4169E1">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="">
+                    <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Banco de dados</span>
@@ -382,7 +434,7 @@
 
             <article class="stack-item" style="--stack-cor: #3FCF8E">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/supabase/3FCF8E" alt="">
+                    <img src="https://cdn.simpleicons.org/supabase/3FCF8E" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Backend as a Service</span>
@@ -392,7 +444,7 @@
 
             <article class="stack-item" style="--stack-cor: #E34F26">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/html5/E34F26" alt="">
+                    <img src="https://cdn.simpleicons.org/html5/E34F26" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Estrutura</span>
@@ -402,7 +454,7 @@
 
             <article class="stack-item" style="--stack-cor: #663399">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/css/663399" alt="">
+                    <img src="https://cdn.simpleicons.org/css/663399" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Estilo</span>
@@ -412,7 +464,7 @@
 
             <article class="stack-item" style="--stack-cor: #F7DF1E">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="">
+                    <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>Interatividade</span>
@@ -422,7 +474,7 @@
 
             <article class="stack-item" style="--stack-cor: #06B6D4">
                 <div class="stack-icone">
-                    <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="">
+                    <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="" loading="lazy" decoding="async">
                 </div>
                 <div class="stack-texto">
                     <span>UI Framework</span>
@@ -441,7 +493,9 @@
 
 
         <div class="contato-wrapper">
-            <form class="contato-form-uiverse" id="formulario">
+            <form class="contato-form-uiverse" id="formulario" data-modo="mensagem">
+                <div class="contato-paineis">
+                <div class="contato-painel ativo" data-painel="mensagem">
                 <span class="contato-form-titulo">Envie uma mensagem</span>
 
                 <label class="contato-input-container" for="contato-nome">
@@ -461,12 +515,90 @@
                     <textarea class="contato-input contato-mensagem" id="contato-mensagem" name="mensagem"
                         placeholder="Digite sua mensagem aqui..." required maxlength="1000"></textarea>
                 </label>
+                </div>
+
+                <div class="contato-painel contato-painel-projeto" data-painel="projeto" aria-hidden="true">
+                    <span class="contato-form-titulo projeto-form-titulo">Vamos criar algo</span>
+                    <p class="projeto-form-subtitulo">Conte o essencial. Eu organizo os próximos passos.</p>
+
+                    <div class="projeto-form-grade">
+                        <label class="contato-input-container" for="projeto-nome">
+                            <span class="projeto-campo-label">Seu nome</span>
+                            <input class="contato-input" id="projeto-nome" name="projetoNome" type="text"
+                                placeholder="Como posso te chamar?" autocomplete="name" required maxlength="80" disabled>
+                        </label>
+                        <label class="contato-input-container" for="projeto-email">
+                            <span class="projeto-campo-label">E-mail</span>
+                            <input class="contato-input" id="projeto-email" name="projetoEmail" type="email"
+                                placeholder="voce@email.com" autocomplete="email" required maxlength="120" disabled>
+                        </label>
+                        <div class="contato-input-container projeto-select-campo">
+                            <span class="projeto-campo-label">Tipo</span>
+                            <select class="projeto-select-native" id="projeto-tipo" name="projetoTipo" required disabled tabindex="-1">
+                                <option value="" selected disabled>Escolha o projeto</option>
+                                <option>Landing page</option><option>Site institucional</option>
+                                <option>Portfólio</option><option>Sistema web</option><option>Outro</option>
+                            </select>
+                            <button class="projeto-select-gatilho" type="button" aria-haspopup="listbox" aria-expanded="false" disabled>
+                                <span class="projeto-select-valor">Escolha o projeto</span>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"></path></svg>
+                            </button>
+                            <div class="projeto-select-menu" role="listbox" aria-label="Tipo de projeto">
+                                <button type="button" data-value="Landing page"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M7 8h10M7 12h7M7 16h4"></path></svg></span>Landing page</button>
+                                <button type="button" data-value="Site institucional"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 11h2M13 11h2M9 15h2M13 15h2"></path></svg></span>Site institucional</button>
+                                <button type="button" data-value="Portfólio"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M9 6V4h6v2M3 11h18M10 11v2h4v-2"></path></svg></span>Portfólio</button>
+                                <button type="button" data-value="Sistema web"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M7 6.5h.01M10 6.5h.01M8 13l-2 2 2 2M16 13l2 2-2 2M13 12l-2 6"></path></svg></span>Sistema web</button>
+                                <i class="projeto-select-separador"></i>
+                                <button type="button" data-value="Outro" class="projeto-select-destaque"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M6 6l12 12M18 6 6 18"></path></svg></span>Outro</button>
+                            </div>
+                        </div>
+                        <div class="contato-input-container projeto-select-campo">
+                            <span class="projeto-campo-label">Orçamento</span>
+                            <select class="projeto-select-native" id="projeto-orcamento" name="projetoOrcamento" required disabled tabindex="-1">
+                                <option value="" selected disabled>Faixa estimada</option>
+                                <option>Até R$ 1.000</option><option>R$ 1.000 — R$ 3.000</option>
+                                <option>R$ 3.000 — R$ 6.000</option><option>Acima de R$ 6.000</option><option>A definir</option>
+                            </select>
+                            <button class="projeto-select-gatilho" type="button" aria-haspopup="listbox" aria-expanded="false" disabled>
+                                <span class="projeto-select-valor">Faixa estimada</span>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"></path></svg>
+                            </button>
+                            <div class="projeto-select-menu" role="listbox" aria-label="Faixa de orçamento">
+                                <button type="button" data-value="Até R$ 1.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M12 3v18M16 7.5c-.8-1-2.1-1.5-4-1.5-2.2 0-4 1.2-4 3s1.4 2.6 4 3 4 1.2 4 3-1.8 3-4 3c-1.9 0-3.3-.6-4-1.7"></path></svg></span>Até R$ 1.000</button>
+                                <button type="button" data-value="R$ 1.000 — R$ 3.000"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M3 10h18M7 15h3"></path></svg></span>R$ 1.000 — R$ 3.000</button>
+                                <button type="button" data-value="R$ 3.000 — R$ 6.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 8h16v11H4zM7 8V5h10v3M8 13h8M8 16h5"></path></svg></span>R$ 3.000 — R$ 6.000</button>
+                                <button type="button" data-value="Acima de R$ 6.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19V12M22 19H2M19 8V3M16.5 5.5H21.5"></path></svg></span>Acima de R$ 6.000</button>
+                                <i class="projeto-select-separador"></i>
+                                <button type="button" data-value="A definir" class="projeto-select-destaque"><span class="select-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.8 9a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1.2.9-1.2 1.8M12 17h.01"></path></svg></span>A definir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="contato-input-container" for="projeto-prazo">
+                        <span class="projeto-campo-label">Prazo desejado</span>
+                        <input class="contato-input" id="projeto-prazo" name="projetoPrazo" type="text"
+                            placeholder="Ex.: em até 30 dias" maxlength="80" disabled>
+                    </label>
+                    <label class="contato-input-container contato-mensagem-container" for="projeto-briefing">
+                        <span class="projeto-campo-label">Sobre a ideia</span>
+                        <textarea class="contato-input contato-mensagem" id="projeto-briefing" name="projetoBriefing"
+                            placeholder="Objetivo, público e funcionalidades importantes..." required maxlength="1500" disabled></textarea>
+                    </label>
+                </div>
+                </div>
 
                 <div class="contato-botao-container">
                     <button class="contato-botao" type="submit">
-                        Enviar pelo WhatsApp
-                        <span aria-hidden="true">↗</span>
+                        <span class="contato-enviar-texto">Enviar pelo WhatsApp</span>
                     </button>
+                </div>
+
+                <button class="projeto-toggle" type="button" aria-expanded="false">
+                    <span class="projeto-toggle-texto">Projeto em mente?</span>
+                    <span class="projeto-toggle-seta" aria-hidden="true">→</span>
+                </button>
+
+                <div class="contato-corrupcao" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
 
                 <div class="contato-textura" aria-hidden="true"></div>
@@ -475,8 +607,12 @@
 
     </section>
 
+    <section class="escultura-particulas" aria-label="Escultura interativa formada por partículas">
+        <div class="escultura-particulas-canvas" aria-hidden="true"></div>
+    </section>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=performance-2"></script>
 
 
     <footer class="rodape">
