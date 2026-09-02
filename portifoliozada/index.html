@@ -26,7 +26,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=project-visit-3">
+    <link rel="stylesheet" href="style.css?v=footer-message-1">
     <link rel="stylesheet" href="inicio.css">
 </head>
 
@@ -121,7 +121,7 @@
 
         <div class="inicio-conteudo">
  
-            <button class="botao-3d">Pronto pra inovar!</button>
+            <button class="botao-3d" type="button" aria-pressed="false">Pronto pra inovar!</button>
 
                 <h1 class="inicio-titulo">
                     Desenvolvedor
@@ -208,11 +208,17 @@
                 </p>
 
                 <div class="sobre-acoes">
-                    <a class="sobre-botao sobre-botao-principal" href="curriculo-joao-pedro.txt" download>
-                        Download CV
+                    <a class="sobre-botao sobre-botao-principal" href="Curriculo.pdf"
+                        download="Curriculo-Joao-Pedro.pdf" type="application/pdf">
+                        <div class="sobre-cv-face">
+                            <span><p>Download CV</p><p aria-hidden="true">↓</p></span>
+                        </div>
+                        <div class="sobre-cv-face">
+                            <span><p>Baixar PDF</p><p aria-hidden="true">✓</p></span>
+                        </div>
                     </a>
                     <a class="sobre-botao sobre-botao-secundario" href="#projetos">
-                        Ver Projetos
+                        <span>Ver Projetos</span>
                     </a>
                 </div>
             </div>
@@ -493,7 +499,14 @@
 
 
         <div class="contato-wrapper">
-            <form class="contato-form-uiverse" id="formulario" data-modo="mensagem">
+            <form class="contato-form-uiverse" id="formulario" data-modo="mensagem"
+                action="https://formsubmit.co/jpedrocoitinho@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="Nova mensagem pelo portfólio">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="Tipo de contato" value="Mensagem" class="contato-tipo-envio">
+                <input type="text" name="_honey" class="contato-honeypot" tabindex="-1" autocomplete="off"
+                    aria-hidden="true">
                 <div class="contato-paineis">
                 <div class="contato-painel ativo" data-painel="mensagem">
                 <span class="contato-form-titulo">Envie uma mensagem</span>
@@ -505,6 +518,15 @@
                     </svg>
                     <input class="contato-input" id="contato-nome" name="nome" type="text"
                         placeholder="Nome" autocomplete="name" required maxlength="80">
+                </label>
+
+                <label class="contato-input-container" for="contato-email">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M3 5H21V19H3V5Z"></path>
+                        <path d="M3 7L12 13L21 7"></path>
+                    </svg>
+                    <input class="contato-input" id="contato-email" name="email" type="email"
+                        placeholder="Seu melhor e-mail" autocomplete="email" required maxlength="120">
                 </label>
 
                 <label class="contato-input-container contato-mensagem-container" for="contato-mensagem">
@@ -529,7 +551,7 @@
                         </label>
                         <label class="contato-input-container" for="projeto-email">
                             <span class="projeto-campo-label">E-mail</span>
-                            <input class="contato-input" id="projeto-email" name="projetoEmail" type="email"
+                            <input class="contato-input" id="projeto-email" name="email" type="email"
                                 placeholder="voce@email.com" autocomplete="email" required maxlength="120" disabled>
                         </label>
                         <div class="contato-input-container projeto-select-campo">
@@ -556,18 +578,18 @@
                             <span class="projeto-campo-label">Orçamento</span>
                             <select class="projeto-select-native" id="projeto-orcamento" name="projetoOrcamento" required disabled tabindex="-1">
                                 <option value="" selected disabled>Faixa estimada</option>
-                                <option>Até R$ 1.000</option><option>R$ 1.000 — R$ 3.000</option>
-                                <option>R$ 3.000 — R$ 6.000</option><option>Acima de R$ 6.000</option><option>A definir</option>
+                                <option>Até R$ 500</option><option>R$ 800 — R$ 1.200</option>
+                                <option>R$ 2.000 — R$ 2.600</option><option>Acima de R$ 3.000</option><option>A definir</option>
                             </select>
                             <button class="projeto-select-gatilho" type="button" aria-haspopup="listbox" aria-expanded="false" disabled>
                                 <span class="projeto-select-valor">Faixa estimada</span>
                                 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"></path></svg>
                             </button>
                             <div class="projeto-select-menu" role="listbox" aria-label="Faixa de orçamento">
-                                <button type="button" data-value="Até R$ 1.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M12 3v18M16 7.5c-.8-1-2.1-1.5-4-1.5-2.2 0-4 1.2-4 3s1.4 2.6 4 3 4 1.2 4 3-1.8 3-4 3c-1.9 0-3.3-.6-4-1.7"></path></svg></span>Até R$ 1.000</button>
-                                <button type="button" data-value="R$ 1.000 — R$ 3.000"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M3 10h18M7 15h3"></path></svg></span>R$ 1.000 — R$ 3.000</button>
-                                <button type="button" data-value="R$ 3.000 — R$ 6.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 8h16v11H4zM7 8V5h10v3M8 13h8M8 16h5"></path></svg></span>R$ 3.000 — R$ 6.000</button>
-                                <button type="button" data-value="Acima de R$ 6.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19V12M22 19H2M19 8V3M16.5 5.5H21.5"></path></svg></span>Acima de R$ 6.000</button>
+                                <button type="button" data-value="Até R$ 500"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M12 3v18M16 7.5c-.8-1-2.1-1.5-4-1.5-2.2 0-4 1.2-4 3s1.4 2.6 4 3 4 1.2 4 3-1.8 3-4 3c-1.9 0-3.3-.6-4-1.7"></path></svg></span>Até R$ 500</button>
+                                <button type="button" data-value="R$ 800 — R$ 1.200"><span class="select-icone"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M3 10h18M7 15h3"></path></svg></span>R$ 800 — R$ 1.200</button>
+                                <button type="button" data-value="R$ 2.000 — R$ 2.600"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 8h16v11H4zM7 8V5h10v3M8 13h8M8 16h5"></path></svg></span>R$ 2.000 — R$ 2.600</button>
+                                <button type="button" data-value="Acima de R$ 3.000"><span class="select-icone"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19V12M22 19H2M19 8V3M16.5 5.5H21.5"></path></svg></span>Acima de R$ 3.000</button>
                                 <i class="projeto-select-separador"></i>
                                 <button type="button" data-value="A definir" class="projeto-select-destaque"><span class="select-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.8 9a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1.2.9-1.2 1.8M12 17h.01"></path></svg></span>A definir</button>
                             </div>
@@ -576,7 +598,7 @@
                     <label class="contato-input-container" for="projeto-prazo">
                         <span class="projeto-campo-label">Prazo desejado</span>
                         <input class="contato-input" id="projeto-prazo" name="projetoPrazo" type="text"
-                            placeholder="Ex.: em até 30 dias" maxlength="80" disabled>
+                            placeholder="Ex: em até 30 dias" maxlength="80" disabled>
                     </label>
                     <label class="contato-input-container contato-mensagem-container" for="projeto-briefing">
                         <span class="projeto-campo-label">Sobre a ideia</span>
@@ -588,9 +610,10 @@
 
                 <div class="contato-botao-container">
                     <button class="contato-botao" type="submit">
-                        <span class="contato-enviar-texto">Enviar pelo WhatsApp</span>
+                        <span class="contato-enviar-texto">Enviar por e-mail</span>
                     </button>
                 </div>
+                <p class="contato-envio-status" role="status" aria-live="polite"></p>
 
                 <button class="projeto-toggle" type="button" aria-expanded="false">
                     <span class="projeto-toggle-texto">Projeto em mente?</span>
@@ -608,18 +631,60 @@
     </section>
 
     <section class="escultura-particulas" aria-label="Escultura interativa formada por partículas">
+        <header class="escultura-cabecalho">
+            <span>Experiência generativa</span>
+            <h2>Animação 3D <strong>em partículas</strong></h2>
+            <p>Tecnologia, profundidade e interação em tempo real.</p>
+        </header>
+
         <div class="escultura-particulas-canvas" aria-hidden="true"></div>
+
+        <div class="escultura-info">
+            <div class="escultura-info-coluna escultura-info-esquerda">
+                <article class="escultura-info-bloco">
+                    <span class="escultura-info-indice">01</span>
+                    <p class="escultura-info-legenda">Escultura generativa</p>
+                    <h2>Milhares de partículas, uma única forma.</h2>
+                    <p>A figura nasce da união de até 18 mil pontos independentes, distribuídos em profundidade para criar volume, brilho e movimento.</p>
+                </article>
+
+                <article class="escultura-info-bloco">
+                    <span class="escultura-info-indice">02</span>
+                    <p class="escultura-info-legenda">Tecnologia</p>
+                    <h3>Three.js + shaders GLSL</h3>
+                    <p>BufferGeometry e ShaderMaterial enviam posições e movimentos para a GPU, renderizando todas as partículas em uma única estrutura.</p>
+                </article>
+            </div>
+
+            <div class="escultura-info-centro" aria-hidden="true"></div>
+
+            <div class="escultura-info-coluna escultura-info-direita">
+                <article class="escultura-info-bloco">
+                    <span class="escultura-info-indice">03</span>
+                    <p class="escultura-info-legenda">Desempenho adaptativo</p>
+                    <h3>Qualidade na medida do dispositivo.</h3>
+                    <p>A densidade, a resolução e o total de pontos se ajustam à tela, memória e núcleos disponíveis, preservando fluidez em diferentes GPUs.</p>
+                </article>
+
+                <article class="escultura-info-bloco">
+                    <span class="escultura-info-indice">04</span>
+                    <p class="escultura-info-legenda">Interação orgânica</p>
+                    <h3>Uma superfície que percebe você.</h3>
+                    <p>O ponteiro afasta os pontos com suavidade e eles retornam à forma original. Fora da tela, a renderização é pausada para economizar recursos.</p>
+                </article>
+            </div>
+        </div>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="script.js?v=performance-2"></script>
+    <script src="script.js?v=email-ajax-2"></script>
 
 
     <footer class="rodape">
         <div class="rodape-conteudo">
             <div class="rodape-topo">
                 <div class="rodape-marca">
-                    <a href="#inicio" class="rodape-logo">JOÃO PEDRO</a>
+                    <h2 class="rodape-logo">Todo grande projeto começa com uma ideia.</h2>
                     <p>Desenvolvedor front-end criando interfaces modernas, funcionais e com personalidade.</p>
                 </div>
 
@@ -642,7 +707,10 @@
                 <div class="rodape-coluna rodape-conversa">
                     <h2>Disponível para projetos</h2>
                     <p>Tem uma ideia? Vamos transformar em uma experiência digital.</p>
-                    <a href="#contato">Vamos conversar <span aria-hidden="true">↗</span></a>
+                    <a href="https://wa.me/5548998468669?text=Ol%C3%A1%2C%20Jo%C3%A3o%20Pedro%21%20Vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto."
+                        target="_blank" rel="noopener noreferrer">
+                        Vamos conversar <span aria-hidden="true">↗</span>
+                    </a>
                 </div>
             </div>
 

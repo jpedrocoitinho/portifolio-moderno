@@ -5,6 +5,14 @@ let introLiberada = false;
 let scrollTravado = 0;
 
 const nav = document.querySelector(".navegacao");
+const botaoHero3d = document.querySelector(".botao-3d");
+
+if (botaoHero3d) {
+  botaoHero3d.addEventListener("click", () => {
+    botaoHero3d.classList.add("botao-3d-fixado");
+    botaoHero3d.setAttribute("aria-pressed", "true");
+  });
+}
 
 function atualizarNavVidro() {
   if(!nav) return;
@@ -128,6 +136,30 @@ gsap.set(".particulas, .navegacao, .cabecalho", {
   y: 18
 });
 
+const animarHeroResponsiva =
+  window.matchMedia("(max-width: 820px)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const elementosHeroResponsiva = animarHeroResponsiva
+  ? gsap.utils.toArray(
+      ".cabecalho .botao-3d, " +
+      ".cabecalho .inicio-titulo, " +
+      ".cabecalho .inicio-subtitulo, " +
+      ".cabecalho .inicio-descricao, " +
+      ".cabecalho .inicio-tecnologias, " +
+      ".cabecalho .inicio-acoes, " +
+      ".cabecalho .container-noot"
+    )
+  : [];
+
+if (elementosHeroResponsiva.length) {
+  gsap.set(elementosHeroResponsiva, {
+    autoAlpha: 0,
+    y: 28,
+    filter: "blur(7px)",
+    force3D: true
+  });
+}
+
 gsap.set(".button-container-inicio .button-inicio", {
   opacity: 0,
   y: -45,
@@ -185,14 +217,16 @@ function liberarIntro(event) {
 
   introLiberada = true;
 
-  gsap.timeline({
+  const timelineSaidaIntro = gsap.timeline({
     defaults: {
       ease: "power3.inOut"
     },
     onComplete: () => {
       destravarScroll();
     }
-  })
+  });
+
+  timelineSaidaIntro
     .to(".intro-loader", {
       opacity: 0,
       y: -24,
@@ -205,6 +239,19 @@ function liberarIntro(event) {
       duration: 0.8,
       stagger: 0.08
     }, "-=0.55");
+
+  if (elementosHeroResponsiva.length) {
+    timelineSaidaIntro.to(elementosHeroResponsiva, {
+      autoAlpha: 1,
+      y: 0,
+      filter: "blur(0px)",
+      duration: 0.62,
+      stagger: 0.075,
+      ease: "power3.out",
+      force3D: true,
+      clearProps: "transform,filter,willChange"
+    }, "-=0.42");
+  }
 }
 
 window.addEventListener("wheel", liberarIntro, { passive: false });
@@ -498,17 +545,61 @@ if (sobreImagem) {
   });
 }
 
-// ====== Formulário de contato: mensagem pronta no WhatsApp ======
+// ====== Formulário de contato: envio por e-mail via FormSubmit ======
 const formularioContato = document.querySelector("#formulario");
 
 if (formularioContato) {
   const botaoAlternarProjeto = formularioContato.querySelector(".projeto-toggle");
   const textoAlternarProjeto = formularioContato.querySelector(".projeto-toggle-texto");
   const textoEnviarContato = formularioContato.querySelector(".contato-enviar-texto");
+  const botaoEnviarContato = formularioContato.querySelector(".contato-botao");
+  const statusEnvioContato = formularioContato.querySelector(".contato-envio-status");
+  const assuntoContato = formularioContato.querySelector("input[name='_subject']");
+  const tipoEnvioContato = formularioContato.querySelector(".contato-tipo-envio");
   const caixaPaineisContato = formularioContato.querySelector(".contato-paineis");
   const paineisContato = [...formularioContato.querySelectorAll(".contato-painel")];
   const selectsProjeto = [...formularioContato.querySelectorAll(".projeto-select-campo")];
+  const chaveLimiteContato = "portfolio-envios-email";
+  const intervaloMinimoContato = 60 * 1000;
+  const janelaLimiteContato = 60 * 60 * 1000;
+  const maximoEnviosContato = 3;
   let alternandoFormulario = false;
+
+  function obterEnviosRecentesContato() {
+    try {
+      const agora = Date.now();
+      const registros = JSON.parse(localStorage.getItem(chaveLimiteContato) || "[]");
+      return Array.isArray(registros)
+        ? registros.filter((registro) => Number.isFinite(registro) && agora - registro < janelaLimiteContato)
+        : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function salvarEnviosContato(registros) {
+    try {
+      localStorage.setItem(chaveLimiteContato, JSON.stringify(registros));
+    } catch (_) {}
+  }
+
+  function exibirStatusContato(mensagem, tipo = "") {
+    statusEnvioContato.textContent = mensagem;
+    statusEnvioContato.classList.toggle("sucesso", tipo === "sucesso");
+    statusEnvioContato.classList.toggle("erro", tipo === "erro");
+  }
+
+  function restaurarSelectsProjeto() {
+    selectsProjeto.forEach((campo) => {
+      const select = campo.querySelector(".projeto-select-native");
+      const valorVisual = campo.querySelector(".projeto-select-valor");
+      const textoInicial = select.options[0]?.textContent || "Selecione";
+      valorVisual.textContent = textoInicial;
+      campo.querySelectorAll("[role='option']").forEach((opcao) => {
+        opcao.setAttribute("aria-selected", "false");
+      });
+    });
+  }
 
   function fecharSelectsProjeto(excecao = null) {
     selectsProjeto.forEach((campo) => {
@@ -588,7 +679,7 @@ if (formularioContato) {
 
     botaoAlternarProjeto.setAttribute("aria-expanded", String(modoProjeto));
     textoAlternarProjeto.textContent = modoProjeto ? "Enviar uma mensagem" : "Projeto em mente?";
-    textoEnviarContato.textContent = modoProjeto ? "Enviar briefing pelo WhatsApp" : "Enviar pelo WhatsApp";
+    textoEnviarContato.textContent = modoProjeto ? "Enviar briefing por e-mail" : "Enviar por e-mail";
     requestAnimationFrame(ajustarAlturaPaineis);
   }
 
@@ -606,6 +697,8 @@ if (formularioContato) {
   botaoAlternarProjeto.addEventListener("click", () => {
     if (alternandoFormulario) return;
     alternandoFormulario = true;
+    exibirStatusContato("");
+    botaoEnviarContato.disabled = false;
     formularioContato.classList.add("trocando");
     const proximoModo = formularioContato.dataset.modo === "mensagem" ? "projeto" : "mensagem";
 
@@ -628,7 +721,7 @@ if (formularioContato) {
   window.addEventListener("resize", ajustarAlturaPaineis, { passive: true });
   ajustarAlturaPaineis();
 
-  formularioContato.addEventListener("submit", (event) => {
+  formularioContato.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     if (!formularioContato.checkValidity()) {
@@ -636,35 +729,66 @@ if (formularioContato) {
       return;
     }
 
-    let textoWhatsApp;
-
-    if (formularioContato.dataset.modo === "projeto") {
-      const dados = formularioContato.elements;
-      textoWhatsApp = [
-        "Olá, João Pedro! Tenho um projeto em mente.",
-        "",
-        `Nome: ${dados.projetoNome.value.trim()}`,
-        `E-mail: ${dados.projetoEmail.value.trim()}`,
-        `Tipo de projeto: ${dados.projetoTipo.value}`,
-        `Orçamento: ${dados.projetoOrcamento.value}`,
-        `Prazo: ${dados.projetoPrazo.value.trim() || "A definir"}`,
-        "",
-        "Sobre a ideia:",
-        dados.projetoBriefing.value.trim()
-      ].join("\n");
-    } else {
-      const nome = formularioContato.elements.nome.value.trim();
-      const mensagem = formularioContato.elements.mensagem.value.trim();
-      textoWhatsApp = [
-        "Olá, João Pedro!",
-        `Meu nome é ${nome}.`,
-        "",
-        mensagem
-      ].join("\n");
+    if (formularioContato.elements._honey.value) {
+      textoEnviarContato.textContent = "Enviado";
+      exibirStatusContato("Mensagem enviada com sucesso.", "sucesso");
+      return;
     }
 
-    const destino = `https://wa.me/5548998468669?text=${encodeURIComponent(textoWhatsApp)}`;
-    window.location.assign(destino);
+    const agora = Date.now();
+    const enviosRecentes = obterEnviosRecentesContato();
+    const ultimoEnvio = enviosRecentes.at(-1) || 0;
+    const esperaRestante = intervaloMinimoContato - (agora - ultimoEnvio);
+
+    if (enviosRecentes.length >= maximoEnviosContato) {
+      textoEnviarContato.textContent = "Limite atingido";
+      exibirStatusContato("Limite de 3 envios por hora atingido. Tente novamente mais tarde.", "erro");
+      return;
+    }
+
+    if (esperaRestante > 0) {
+      textoEnviarContato.textContent = "Aguarde um pouco";
+      exibirStatusContato(`Espere ${Math.ceil(esperaRestante / 1000)} segundos antes de enviar novamente.`, "erro");
+      return;
+    }
+
+    const modoProjeto = formularioContato.dataset.modo === "projeto";
+    assuntoContato.value = modoProjeto
+      ? "Novo briefing de projeto pelo portfólio"
+      : "Nova mensagem pelo portfólio";
+    tipoEnvioContato.value = modoProjeto ? "Briefing de projeto" : "Mensagem";
+    textoEnviarContato.textContent = "Enviando...";
+    botaoEnviarContato.disabled = true;
+    exibirStatusContato("Enviando sua mensagem...");
+
+    try {
+      const dadosFormulario = Object.fromEntries(new FormData(formularioContato).entries());
+      const endpointAjax = formularioContato.action.replace("formsubmit.co/", "formsubmit.co/ajax/");
+      const resposta = await fetch(endpointAjax, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(dadosFormulario)
+      });
+      const resultado = await resposta.json().catch(() => ({}));
+
+      if (!resposta.ok || resultado.success === false || resultado.success === "false") {
+        throw new Error(resultado.message || "Não foi possível concluir o envio.");
+      }
+
+      salvarEnviosContato([...enviosRecentes, Date.now()]);
+      formularioContato.reset();
+      restaurarSelectsProjeto();
+      textoEnviarContato.textContent = "Enviado";
+      exibirStatusContato("Mensagem enviada. Obrigado pelo contato!", "sucesso");
+      requestAnimationFrame(ajustarAlturaPaineis);
+    } catch (_) {
+      botaoEnviarContato.disabled = false;
+      textoEnviarContato.textContent = modoProjeto ? "Tentar enviar o briefing" : "Tentar novamente";
+      exibirStatusContato("Não foi possível enviar agora. Verifique sua conexão e tente novamente.", "erro");
+    }
   });
 }
 
@@ -1047,6 +1171,71 @@ document.addEventListener("keydown", (event) => {
 // ====== Escultura GPU de partículas ======
 const secaoEscultura = document.querySelector(".escultura-particulas");
 const canvasEscultura = document.querySelector(".escultura-particulas-canvas");
+const cabecalhoEscultura = document.querySelector(".escultura-cabecalho");
+const informacoesEscultura = [...document.querySelectorAll(".escultura-info-bloco")];
+let entradaEsculturaAgendada = null;
+let entradaEsculturaConcluida = false;
+let tituloEsculturaRevelado = false;
+
+if (window.gsap && cabecalhoEscultura && informacoesEscultura.length) {
+  gsap.set(cabecalhoEscultura, {
+    autoAlpha: 0,
+    y: 34,
+    filter: "blur(6px)"
+  });
+  gsap.set(informacoesEscultura, {
+    autoAlpha: 0,
+    x: (indice) => indice < 2 ? -34 : 34,
+    y: 12,
+    filter: "blur(8px)"
+  });
+}
+
+function revelarTituloEscultura(reduzirMovimento = false) {
+  if (tituloEsculturaRevelado || !window.gsap || !cabecalhoEscultura) return;
+  tituloEsculturaRevelado = true;
+
+  gsap.to(cabecalhoEscultura, {
+    autoAlpha: 1,
+    y: 0,
+    filter: "blur(0px)",
+    duration: reduzirMovimento ? 0.01 : 0.9,
+    ease: "power3.out",
+    clearProps: "transform,filter"
+  });
+}
+
+if (secaoEscultura && cabecalhoEscultura && "IntersectionObserver" in window) {
+  const observadorTituloEscultura = new IntersectionObserver((entradas, observador) => {
+    if (!entradas.some((entrada) => entrada.isIntersecting)) return;
+    revelarTituloEscultura(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    observador.disconnect();
+  }, { threshold: 0.1, rootMargin: "0px 0px -8% 0px" });
+
+  observadorTituloEscultura.observe(secaoEscultura);
+}
+
+function revelarInformacoesEscultura(reduzirMovimento = false) {
+  if (entradaEsculturaConcluida || entradaEsculturaAgendada || !window.gsap) return;
+
+  const atrasoMontagem = reduzirMovimento ? 0.15 : 2.35;
+  entradaEsculturaAgendada = gsap.delayedCall(atrasoMontagem, () => {
+    entradaEsculturaConcluida = true;
+    entradaEsculturaAgendada = null;
+
+    revelarTituloEscultura(reduzirMovimento);
+    gsap.to(informacoesEscultura, {
+      autoAlpha: 1,
+      x: 0,
+      y: 0,
+      filter: "blur(0px)",
+      duration: reduzirMovimento ? 0.01 : 0.68,
+      stagger: reduzirMovimento ? 0 : 0.11,
+      ease: "power3.out",
+      clearProps: "transform,filter"
+    });
+  });
+}
 
 function iniciarEsculturaCanvas() {
   if (!secaoEscultura || !canvasEscultura || canvasEscultura.dataset.iniciada) return;
@@ -1125,7 +1314,7 @@ function iniciarEsculturaCanvas() {
     const proporcaoPixel = Math.min(window.devicePixelRatio || 1, 1.35);
     largura = canvasEscultura.clientWidth;
     altura = canvasEscultura.clientHeight;
-    raio = Math.min(largura, altura) * (largura <= 700 ? 0.37 : 0.34);
+    raio = Math.min(largura, altura) * (largura <= 700 ? 0.4 : 0.38);
     canvas.width = Math.round(largura * proporcaoPixel);
     canvas.height = Math.round(altura * proporcaoPixel);
     canvas.style.width = `${largura}px`;
@@ -1236,7 +1425,7 @@ function iniciarEsculturaCanvas() {
     frame = requestAnimationFrame(desenhar);
   }
 
-  canvasEscultura.addEventListener("pointermove", (event) => {
+  function atualizarInteracaoCanvas(event) {
     const caixa = canvasEscultura.getBoundingClientRect();
     mouse.alvoX = event.clientX - caixa.left;
     mouse.alvoY = event.clientY - caixa.top;
@@ -1245,13 +1434,19 @@ function iniciarEsculturaCanvas() {
       mouse.y = mouse.alvoY;
     }
     mouse.ativo = true;
-  }, { passive: true });
+  }
 
-  canvasEscultura.addEventListener("pointerleave", () => {
+  function encerrarInteracaoCanvas() {
     mouse.ativo = false;
     mouse.alvoX = -9999;
     mouse.alvoY = -9999;
-  }, { passive: true });
+  }
+
+  canvasEscultura.addEventListener("pointerdown", atualizarInteracaoCanvas, { passive: true });
+  canvasEscultura.addEventListener("pointermove", atualizarInteracaoCanvas, { passive: true });
+  canvasEscultura.addEventListener("pointerup", encerrarInteracaoCanvas, { passive: true });
+  canvasEscultura.addEventListener("pointercancel", encerrarInteracaoCanvas, { passive: true });
+  canvasEscultura.addEventListener("pointerleave", encerrarInteracaoCanvas, { passive: true });
 
   window.addEventListener("portfolio:tema", (event) => {
     temaClaroCanvas = event.detail.temaClaro;
@@ -1265,6 +1460,7 @@ function iniciarEsculturaCanvas() {
     if (visivel) {
       if (!inicio) inicio = performance.now();
       iniciar();
+      revelarInformacoesEscultura(reduzirMovimento.matches);
     } else if (frame) {
       cancelAnimationFrame(frame);
       frame = 0;
@@ -1449,7 +1645,7 @@ function iniciarEsculturaWebGL() {
       cameraEscultura.aspect = largura / altura;
       cameraEscultura.updateProjectionMatrix();
 
-      const escala = largura <= 700 ? 0.92 : Math.min(1.28, 0.92 + largura / 4200);
+      const escala = largura <= 700 ? 0.98 : Math.min(1.42, 0.98 + largura / 3600);
       pontosEscultura.scale.setScalar(escala);
     }
 
@@ -1490,7 +1686,7 @@ function iniciarEsculturaWebGL() {
       frameEscultura = requestAnimationFrame(renderizarEscultura);
     }
 
-    canvasEscultura.addEventListener("pointermove", (event) => {
+    function atualizarInteracaoWebGL(event) {
       if (reduzirMovimento.matches) return;
       const caixa = canvasEscultura.getBoundingClientRect();
       const x = ((event.clientX - caixa.left) / caixa.width) * 2 - 1;
@@ -1499,12 +1695,18 @@ function iniciarEsculturaWebGL() {
 
       uniformsEscultura.uMouse.value.set(x * 1.45 * proporcao, y * 1.45);
       alvoForcaMouse = 1;
-    }, { passive: true });
+    }
 
-    canvasEscultura.addEventListener("pointerleave", () => {
+    function encerrarInteracaoWebGL() {
       alvoForcaMouse = 0;
       uniformsEscultura.uMouse.value.set(10, 10);
-    }, { passive: true });
+    }
+
+    canvasEscultura.addEventListener("pointerdown", atualizarInteracaoWebGL, { passive: true });
+    canvasEscultura.addEventListener("pointermove", atualizarInteracaoWebGL, { passive: true });
+    canvasEscultura.addEventListener("pointerup", encerrarInteracaoWebGL, { passive: true });
+    canvasEscultura.addEventListener("pointercancel", encerrarInteracaoWebGL, { passive: true });
+    canvasEscultura.addEventListener("pointerleave", encerrarInteracaoWebGL, { passive: true });
 
     const observadorEscultura = new IntersectionObserver((entradas) => {
       entradas.forEach((entrada) => {
@@ -1513,6 +1715,7 @@ function iniciarEsculturaWebGL() {
         if (visivelEscultura) {
           if (!inicioMontagem) inicioMontagem = performance.now();
           iniciarEscultura();
+          revelarInformacoesEscultura(reduzirMovimento.matches);
         } else if (frameEscultura) {
           cancelAnimationFrame(frameEscultura);
           frameEscultura = 0;
