@@ -125,22 +125,23 @@ function destravarScroll() {
   document.body.style.right = "";
   document.body.style.width = "";
   document.body.style.overflow = "";
-  window.scrollTo(0, 0);
+  if (scrollTravado > 0) window.scrollTo(0, scrollTravado);
 }
 
 window.scrollTo(0, 0);
 travarScroll();
 
-gsap.set(".navegacao, .cabecalho", {
+const animarHeroResponsiva =
+  window.matchMedia("(max-width: 820px)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+gsap.set(animarHeroResponsiva ? ".navegacao" : ".navegacao, .cabecalho", {
   opacity: 0,
   y: 18
 });
 
 gsap.set(".particulas", { opacity: 0 });
 
-const animarHeroResponsiva =
-  window.matchMedia("(max-width: 820px)").matches &&
-  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const elementosHeroResponsiva = animarHeroResponsiva
   ? gsap.utils.toArray(
       ".cabecalho .inicio-conteudo, " +
@@ -212,6 +213,13 @@ function liberarIntro(event) {
   if (!introCompleta) return;
 
   introLiberada = true;
+  let scrollLiberadoNaTransicao = false;
+
+  function liberarLayout() {
+    if (scrollLiberadoNaTransicao) return;
+    scrollLiberadoNaTransicao = true;
+    destravarScroll();
+  }
 
   const timelineSaidaIntro = gsap.timeline({
     defaults: {
@@ -220,42 +228,56 @@ function liberarIntro(event) {
     onComplete: () => {
       const introLoader = document.querySelector(".intro-loader");
       if (introLoader) introLoader.style.display = "none";
-
-      // Libera o layout no frame seguinte. No Android, remover o body fixo no
-      // mesmo frame em que filtros e transforms terminam provoca um salto de
-      // composição perceptível no header e na hero.
-      requestAnimationFrame(() => {
-        destravarScroll();
-        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
-      });
+      if (!scrollLiberadoNaTransicao) requestAnimationFrame(liberarLayout);
     }
   });
 
-  timelineSaidaIntro
-    .to(".intro-loader", {
+  if (animarHeroResponsiva) {
+    timelineSaidaIntro
+      .to(".intro-loader", {
+        autoAlpha: 0,
+        duration: 0.48,
+        ease: "power2.out",
+        pointerEvents: "none"
+      })
+      // O reflow da remoção do body fixo acontece entre a intro e a entrada
+      // da hero, quando nenhuma camada grande está sendo transformada.
+      .call(liberarLayout)
+      .to(".particulas", {
+        opacity: 1,
+        duration: 0.42,
+        ease: "power2.out"
+      }, "<")
+      .to(".navegacao", {
+        opacity: 1,
+        y: 0,
+        duration: 0.42,
+        ease: "power2.out",
+        clearProps: "transform,willChange"
+      }, "<0.04")
+      .to(elementosHeroResponsiva, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.58,
+        stagger: 0.08,
+        ease: "power2.out",
+        force3D: true,
+        clearProps: "transform,filter,willChange"
+      }, "<0.08");
+  } else {
+    timelineSaidaIntro
+      .to(".intro-loader", {
       opacity: 0,
       y: -24,
       duration: 0.9,
       pointerEvents: "none"
-    })
-    .to(".particulas, .navegacao, .cabecalho", {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.08
-    }, "-=0.55");
-
-  if (elementosHeroResponsiva.length) {
-    timelineSaidaIntro.to(elementosHeroResponsiva, {
-      autoAlpha: 1,
-      y: 0,
-      filter: "none",
-      duration: 0.58,
-      stagger: 0.08,
-      ease: "power3.out",
-      force3D: true,
-      clearProps: "transform,filter,willChange"
-    }, "-=0.42");
+      })
+      .to(".particulas, .navegacao, .cabecalho", {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.08
+      }, "-=0.55");
   }
 }
 
