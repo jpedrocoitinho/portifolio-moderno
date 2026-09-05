@@ -143,12 +143,7 @@ const animarHeroResponsiva =
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const elementosHeroResponsiva = animarHeroResponsiva
   ? gsap.utils.toArray(
-      ".cabecalho .botao-3d, " +
-      ".cabecalho .inicio-titulo, " +
-      ".cabecalho .inicio-subtitulo, " +
-      ".cabecalho .inicio-descricao, " +
-      ".cabecalho .inicio-tecnologias, " +
-      ".cabecalho .inicio-acoes, " +
+      ".cabecalho .inicio-conteudo, " +
       ".cabecalho .container-noot"
     )
   : [];
@@ -255,8 +250,8 @@ function liberarIntro(event) {
       autoAlpha: 1,
       y: 0,
       filter: "none",
-      duration: 0.5,
-      stagger: 0.055,
+      duration: 0.58,
+      stagger: 0.08,
       ease: "power3.out",
       force3D: true,
       clearProps: "transform,filter,willChange"
@@ -1253,14 +1248,15 @@ function iniciarEsculturaCanvas() {
   canvasEscultura.replaceChildren();
 
   const canvas = document.createElement("canvas");
-  const contexto = canvas.getContext("2d", { alpha: true, desynchronized: true });
+  const contexto = canvas.getContext("2d", { alpha: true });
   const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   if (!contexto) return;
   canvasEscultura.appendChild(canvas);
 
+  const dispositivoMovelCanvas = window.matchMedia("(max-width: 700px)").matches;
   const poucosNucleos = (navigator.hardwareConcurrency || 4) <= 4;
-  const total = window.innerWidth <= 700 ? 2600 : poucosNucleos ? 4200 : 5600;
+  const total = dispositivoMovelCanvas ? 2200 : poucosNucleos ? 4200 : 5600;
   const pontos = [];
   const camadasDesenho = Array.from({ length: 7 }, () => []);
   const coresCamadas = [
@@ -1295,6 +1291,8 @@ function iniciarEsculturaCanvas() {
   let frame = 0;
   let visivel = false;
   let inicio = 0;
+  let ultimoFrameCanvas = 0;
+  const intervaloFrameCanvas = dispositivoMovelCanvas ? 1000 / 45 : 0;
 
   for (let indice = 0; indice < total; indice++) {
     const y = Math.random() * 2 - 1;
@@ -1339,6 +1337,10 @@ function iniciarEsculturaCanvas() {
       frame = 0;
       return;
     }
+
+    frame = reduzirMovimento.matches ? 0 : requestAnimationFrame(desenhar);
+    if (intervaloFrameCanvas && tempo - ultimoFrameCanvas < intervaloFrameCanvas) return;
+    ultimoFrameCanvas = tempo;
 
     contexto.clearRect(0, 0, largura, altura);
     const segundos = tempo * 0.001;
@@ -1427,11 +1429,11 @@ function iniciarEsculturaCanvas() {
       contexto.fill();
     });
 
-    frame = reduzirMovimento.matches ? 0 : requestAnimationFrame(desenhar);
   }
 
   function iniciar() {
     if (frame) return;
+    ultimoFrameCanvas = 0;
     frame = requestAnimationFrame(desenhar);
   }
 
@@ -1802,6 +1804,14 @@ if (secaoEscultura && canvasEscultura) {
   // escultura se aproximar da tela. Isso libera a primeira navegação pelas
   // seções e ainda deixa a animação pronta antes de o usuário alcançá-la.
   const prepararEscultura = () => {
+    // O Chrome Android apresenta falhas de composição com canvas WebGL
+    // transparente em alguns aparelhos. O Canvas 2D preserva a experiência,
+    // inclusive o toque, sem o retângulo preto e sem flashes.
+    if (window.matchMedia("(max-width: 700px)").matches) {
+      iniciarEsculturaCanvas();
+      return;
+    }
+
     const iniciarQuandoLivre = () => {
       carregarThreeSobDemanda()
         .then(iniciarEsculturaWebGL)

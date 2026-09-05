@@ -2610,7 +2610,6 @@ background:
   height: clamp(320px, 112vw, 430px);
   flex: 0 0 auto;
   background: transparent;
-  isolation: isolate;
 }
 
 .escultura-info {
@@ -4809,14 +4808,6 @@ canvas {
 
   .particulas {
     opacity: 0.62;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-
-  .intro-loader,
-  .navegacao,
-  .cabecalho {
-    backface-visibility: hidden;
   }
 
   .navegacao.nav-vidro {
@@ -4833,6 +4824,5 @@ canvas {
 
   .escultura-particulas-canvas canvas {
     background: transparent !important;
-    backface-visibility: hidden;
   }
 }
