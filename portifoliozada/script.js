@@ -1025,16 +1025,104 @@ const painelStack = document.querySelector(".stack-painel");
 const secaoStack = document.querySelector(".stack");
 
 if (painelStack) {
-  painelStack.addEventListener("pointermove", (event) => {
+  const luzStackPorScroll = window.matchMedia("(max-width: 820px)");
+  let luzStackFrame = 0;
+  let luzStackLeituraFrame = 0;
+  let luzStackX = 0;
+  let luzStackY = 0;
+  let luzStackAlvoX = 0;
+  let luzStackAlvoY = 0;
+
+  function posicionarLuzStack(x, y) {
+    painelStack.style.setProperty("--stack-x", `${x}px`);
+    painelStack.style.setProperty("--stack-y", `${y}px`);
+  }
+
+  function animarLuzStackMobile() {
+    const diferencaX = luzStackAlvoX - luzStackX;
+    const diferencaY = luzStackAlvoY - luzStackY;
+
+    luzStackX += diferencaX * 0.14;
+    luzStackY += diferencaY * 0.14;
+    posicionarLuzStack(luzStackX, luzStackY);
+
+    if (Math.abs(diferencaX) > 0.35 || Math.abs(diferencaY) > 0.35) {
+      luzStackFrame = requestAnimationFrame(animarLuzStackMobile);
+    } else {
+      luzStackX = luzStackAlvoX;
+      luzStackY = luzStackAlvoY;
+      posicionarLuzStack(luzStackX, luzStackY);
+      luzStackFrame = 0;
+    }
+  }
+
+  function atualizarLuzStackPeloScroll() {
+    if (!luzStackPorScroll.matches) return;
+
     const caixa = painelStack.getBoundingClientRect();
-    painelStack.style.setProperty("--stack-x", `${event.clientX - caixa.left}px`);
-    painelStack.style.setProperty("--stack-y", `${event.clientY - caixa.top}px`);
+    const alturaTela = window.innerHeight || document.documentElement.clientHeight;
+    const inicioTrajeto = alturaTela * 0.78;
+    const fimTrajeto = alturaTela * 0.22;
+    const distanciaTotal = caixa.height + inicioTrajeto - fimTrajeto;
+    const progresso = Math.max(
+      0,
+      Math.min(1, (inicioTrajeto - caixa.top) / Math.max(1, distanciaTotal))
+    );
+
+    // Duas ondas completas formam o zigue-zague entre as cinco fileiras.
+    const posicaoHorizontal = 0.5 - Math.cos(progresso * Math.PI * 4) * 0.32;
+    luzStackAlvoX = caixa.width * posicaoHorizontal;
+    luzStackAlvoY = caixa.height * (0.06 + progresso * 0.88);
+
+    if (!luzStackX && !luzStackY) {
+      luzStackX = luzStackAlvoX;
+      luzStackY = luzStackAlvoY;
+      posicionarLuzStack(luzStackX, luzStackY);
+      return;
+    }
+
+    if (!luzStackFrame) luzStackFrame = requestAnimationFrame(animarLuzStackMobile);
+  }
+
+  function solicitarAtualizacaoLuzStack() {
+    if (!luzStackPorScroll.matches || luzStackLeituraFrame) return;
+    luzStackLeituraFrame = requestAnimationFrame(() => {
+      luzStackLeituraFrame = 0;
+      atualizarLuzStackPeloScroll();
+    });
+  }
+
+  function centralizarLuzStack() {
+    const caixa = painelStack.getBoundingClientRect();
+    luzStackX = caixa.width * 0.5;
+    luzStackY = caixa.height * 0.5;
+    luzStackAlvoX = luzStackX;
+    luzStackAlvoY = luzStackY;
+    posicionarLuzStack(luzStackX, luzStackY);
+  }
+
+  painelStack.addEventListener("pointermove", (event) => {
+    if (luzStackPorScroll.matches || event.pointerType === "touch") return;
+    const caixa = painelStack.getBoundingClientRect();
+    posicionarLuzStack(event.clientX - caixa.left, event.clientY - caixa.top);
   });
 
   painelStack.addEventListener("pointerleave", () => {
-    painelStack.style.setProperty("--stack-x", "50%");
-    painelStack.style.setProperty("--stack-y", "50%");
+    if (!luzStackPorScroll.matches) centralizarLuzStack();
   });
+
+  window.addEventListener("scroll", solicitarAtualizacaoLuzStack, { passive: true });
+  window.addEventListener("resize", () => {
+    if (luzStackPorScroll.matches) solicitarAtualizacaoLuzStack();
+    else centralizarLuzStack();
+  }, { passive: true });
+  luzStackPorScroll.addEventListener("change", () => {
+    if (luzStackPorScroll.matches) solicitarAtualizacaoLuzStack();
+    else centralizarLuzStack();
+  });
+
+  if (luzStackPorScroll.matches) solicitarAtualizacaoLuzStack();
+  else centralizarLuzStack();
 
   const itensInterativosStack = Array.from(painelStack.querySelectorAll(".stack-item"));
 

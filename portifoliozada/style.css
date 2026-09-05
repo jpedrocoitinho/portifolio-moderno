@@ -1783,8 +1783,8 @@ html {
 }
 
 .stack-painel {
-  --stack-x: 50%;
-  --stack-y: 50%;
+  --stack-x: 0px;
+  --stack-y: 0px;
   width: min(1320px, 100%);
   margin: 0 auto;
   display: grid;
@@ -1804,14 +1804,16 @@ html {
 .stack-painel::after {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 720px;
+  height: 720px;
   z-index: 4;
   pointer-events: none;
-  background: radial-gradient(
-    360px circle at var(--stack-x) var(--stack-y),
-    rgba(167, 139, 250, 0.09),
-    transparent 62%
-  );
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.09), transparent 62%);
+  transform: translate3d(var(--stack-x), var(--stack-y), 0) translate(-50%, -50%);
+  will-change: transform;
 }
 
 .stack-item {
@@ -4602,6 +4604,18 @@ canvas {
     border-radius: 0;
     background: transparent;
     box-shadow: none;
+  }
+
+  .stack-painel::after {
+    width: 270px;
+    height: 270px;
+    opacity: 0.95;
+    background: radial-gradient(
+      circle,
+      rgba(154, 126, 255, 0.19) 0%,
+      rgba(108, 92, 231, 0.1) 38%,
+      transparent 70%
+    );
   }
 
   .stack-item,
