@@ -131,10 +131,12 @@ function destravarScroll() {
 window.scrollTo(0, 0);
 travarScroll();
 
-gsap.set(".particulas, .navegacao, .cabecalho", {
+gsap.set(".navegacao, .cabecalho", {
   opacity: 0,
   y: 18
 });
+
+gsap.set(".particulas", { opacity: 0 });
 
 const animarHeroResponsiva =
   window.matchMedia("(max-width: 820px)").matches &&
@@ -155,7 +157,6 @@ if (elementosHeroResponsiva.length) {
   gsap.set(elementosHeroResponsiva, {
     autoAlpha: 0,
     y: 28,
-    filter: "blur(7px)",
     force3D: true
   });
 }
@@ -222,7 +223,16 @@ function liberarIntro(event) {
       ease: "power3.inOut"
     },
     onComplete: () => {
-      destravarScroll();
+      const introLoader = document.querySelector(".intro-loader");
+      if (introLoader) introLoader.style.display = "none";
+
+      // Libera o layout no frame seguinte. No Android, remover o body fixo no
+      // mesmo frame em que filtros e transforms terminam provoca um salto de
+      // composição perceptível no header e na hero.
+      requestAnimationFrame(() => {
+        destravarScroll();
+        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+      });
     }
   });
 
@@ -244,9 +254,9 @@ function liberarIntro(event) {
     timelineSaidaIntro.to(elementosHeroResponsiva, {
       autoAlpha: 1,
       y: 0,
-      filter: "blur(0px)",
-      duration: 0.62,
-      stagger: 0.075,
+      filter: "none",
+      duration: 0.5,
+      stagger: 0.055,
       ease: "power3.out",
       force3D: true,
       clearProps: "transform,filter,willChange"
@@ -1481,18 +1491,23 @@ function iniciarEsculturaWebGL() {
   try {
     canvasEscultura.dataset.iniciada = "webgl";
     const reduzirMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const dispositivoMovel = window.matchMedia("(max-width: 700px)").matches;
     const rendererEscultura = new THREE.WebGLRenderer({
       alpha: true,
       antialias: false,
-      powerPreference: "high-performance"
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: false,
+      powerPreference: dispositivoMovel ? "default" : "high-performance"
     });
     const cenaEscultura = new THREE.Scene();
     const cameraEscultura = new THREE.PerspectiveCamera(42, 1, 0.1, 20);
     const poucosRecursos =
       (navigator.hardwareConcurrency || 4) <= 4 ||
       (navigator.deviceMemory || 4) <= 4;
-    const quantidadeParticulas = window.innerWidth <= 700
-      ? (poucosRecursos ? 6500 : 9000)
+    const quantidadeParticulas = dispositivoMovel
+      ? (poucosRecursos ? 4800 : 6500)
       : (poucosRecursos ? 12000 : 18000);
     const posicoes = new Float32Array(quantidadeParticulas * 3);
     const dispersao = new Float32Array(quantidadeParticulas * 3);
@@ -1500,9 +1515,11 @@ function iniciarEsculturaWebGL() {
 
     cameraEscultura.position.z = 3.7;
     rendererEscultura.setClearColor(0x000000, 0);
-    rendererEscultura.setPixelRatio(
-      Math.min(window.devicePixelRatio, poucosRecursos || window.innerWidth <= 700 ? 1.25 : 1.5)
-    );
+    const proporcaoPixelEscultura = dispositivoMovel
+      ? 1
+      : Math.min(window.devicePixelRatio || 1, poucosRecursos ? 1.25 : 1.5);
+    rendererEscultura.setPixelRatio(proporcaoPixelEscultura);
+    rendererEscultura.domElement.style.background = "transparent";
     canvasEscultura.appendChild(rendererEscultura.domElement);
 
     for (let indice = 0; indice < quantidadeParticulas; indice++) {
@@ -1540,7 +1557,7 @@ function iniciarEsculturaWebGL() {
       uMontagem: { value: reduzirMovimento.matches ? 1 : 0 },
       uMouse: { value: new THREE.Vector2(10, 10) },
       uForcaMouse: { value: 0 },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, 1.5) }
+      uPixelRatio: { value: proporcaoPixelEscultura }
     };
 
     const materialEscultura = new THREE.ShaderMaterial({
@@ -1634,6 +1651,8 @@ function iniciarEsculturaWebGL() {
     let inicioMontagem = 0;
     let alvoForcaMouse = 0;
     let ultimoTempo = 0;
+    let ultimoFrameRenderizado = 0;
+    const intervaloFrame = dispositivoMovel ? 1000 / 45 : 0;
 
     function redimensionarEscultura() {
       const largura = canvasEscultura.clientWidth;
@@ -1655,6 +1674,13 @@ function iniciarEsculturaWebGL() {
         return;
       }
 
+      frameEscultura = requestAnimationFrame(renderizarEscultura);
+
+      // Um ritmo estável de 45 fps é visualmente mais fluido em celulares do
+      // que alternar entre 60 e frames perdidos durante rolagem/composição.
+      if (intervaloFrame && tempo - ultimoFrameRenderizado < intervaloFrame) return;
+      ultimoFrameRenderizado = tempo;
+
       const segundos = tempo * 0.001;
       const delta = Math.min(0.05, segundos - ultimoTempo || 0);
       ultimoTempo = segundos;
@@ -1674,15 +1700,15 @@ function iniciarEsculturaWebGL() {
       rendererEscultura.render(cenaEscultura, cameraEscultura);
 
       if (reduzirMovimento.matches) {
+        cancelAnimationFrame(frameEscultura);
         frameEscultura = 0;
-      } else {
-        frameEscultura = requestAnimationFrame(renderizarEscultura);
       }
     }
 
     function iniciarEscultura() {
       if (frameEscultura) return;
       ultimoTempo = performance.now() * 0.001;
+      ultimoFrameRenderizado = 0;
       frameEscultura = requestAnimationFrame(renderizarEscultura);
     }
 
@@ -1707,6 +1733,25 @@ function iniciarEsculturaWebGL() {
     canvasEscultura.addEventListener("pointerup", encerrarInteracaoWebGL, { passive: true });
     canvasEscultura.addEventListener("pointercancel", encerrarInteracaoWebGL, { passive: true });
     canvasEscultura.addEventListener("pointerleave", encerrarInteracaoWebGL, { passive: true });
+
+    rendererEscultura.domElement.addEventListener("webglcontextlost", (event) => {
+      event.preventDefault();
+      if (frameEscultura) cancelAnimationFrame(frameEscultura);
+      frameEscultura = 0;
+    }, { passive: false });
+
+    rendererEscultura.domElement.addEventListener("webglcontextrestored", () => {
+      if (visivelEscultura) iniciarEscultura();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && frameEscultura) {
+        cancelAnimationFrame(frameEscultura);
+        frameEscultura = 0;
+      } else if (!document.hidden && visivelEscultura) {
+        iniciarEscultura();
+      }
+    });
 
     const observadorEscultura = new IntersectionObserver((entradas) => {
       entradas.forEach((entrada) => {
@@ -1775,7 +1820,12 @@ if (secaoEscultura && canvasEscultura) {
       if (!entradas.some((entrada) => entrada.isIntersecting)) return;
       observador.disconnect();
       prepararEscultura();
-    }, { rootMargin: "1200px 0px", threshold: 0 });
+    }, {
+      rootMargin: window.matchMedia("(max-width: 700px)").matches
+        ? "420px 0px"
+        : "1200px 0px",
+      threshold: 0
+    });
 
     observadorPreparoEscultura.observe(secaoEscultura);
   } else {
